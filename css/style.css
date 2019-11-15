@@ -107,13 +107,16 @@ ol {
     left: 35%;
     margin: 10px;
     text-align: center;
-    border: 2px solid #9AD3DE;
+    border: 2px solid rgb(37, 42, 43);
     border-radius: 8px;
 }
 
 .popup>p {
     line-height: 25px;
     color: #333;
+}
+.popup>span {
+    display: inline-block;
 }
 
 .popup>div>button {
