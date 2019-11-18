@@ -1,3 +1,25 @@
+const a = `
+  1. <object>, <param>
+  2. <form>, <select>, <option>
+  3. <frameset>, <frame>, <iframe>
+  4. <table>, <th>, <tr>, <td>`;
+
+console.log(JSON.stringify(a));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ------------------ State ------------------ */
 let quizType = ''; // 선택한 퀴즈 카테고리
 let quizScore = 0; // 선택한 퀴즈 스코어
@@ -83,14 +105,18 @@ window.onload = () => {
 };
 
 // quizType 상태를 선택된 카테고리로 설정
-$categoryList.onchange = ({ target }) => {
+$categoryList.onchange = ({
+  target
+}) => {
   if (target.classList.contains('category')) return;
   quizType = flipCard(target);
   console.log(quizType);
 };
 
 // quizScore 상태를 선택된 점수로 설정, currentPoint와 bettingPoint 갱신
-$scoreList.onchange = ({ target }) => {
+$scoreList.onchange = ({
+  target
+}) => {
   if (target.classList.contains('score')) return;
   quizScore = +flipCard(target);
   console.log(quizScore);
@@ -105,7 +131,9 @@ $scoreList.onchange = ({ target }) => {
 };
 
 // 퀴즈 실행
-$quizStart.onclick = ({ target }) =>   {
+$quizStart.onclick = ({
+  target
+}) => {
   // 1. 퀴즈 카테고리 혹은 점수를 선택하지 않았으면 에러 메시지를 표시한다.
   if (!quizType || !quizScore) {
     $selectError.style.display = 'block';
@@ -118,7 +146,7 @@ $quizStart.onclick = ({ target }) =>   {
   // 4. json-server에 quizType과 quizScore 상태에 해당하는 문제를 요청한다.
   fetch('http://localhost:5000/html/1')
     .then(problem => problem.json())
-  // 5. 요청한 데이터(문제)를 문제 출제 영역에 innerHTML로 삽입한다.
+    // 5. 요청한 데이터(문제)를 문제 출제 영역에 innerHTML로 삽입한다.
     .then(parsedProblem => renderQuiz(parsedProblem))
     .catch(console.error);
 
@@ -133,7 +161,9 @@ $quizStart.onclick = ({ target }) =>   {
 };
 
 // answer 상태를 사용자가 선택한 보기로 설정
-$choiceList.onchange = ({ target }) => {
+$choiceList.onchange = ({
+  target
+}) => {
   if (target.classList.contains('choice')) return;
   answer = target.nextElementSibling.textContent;
   // console.log(answer);
