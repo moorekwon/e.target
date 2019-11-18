@@ -1,0 +1,23 @@
+{
+  "name": "e.target",
+  "version": "1.0.0",
+  "description": "<br>",
+  "main": "index.js",
+  "scripts": {
+    "start": "json-server --watch db.json --port 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moorekwon/e.target.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moorekwon/e.target/issues"
+  },
+  "homepage": "https://github.com/moorekwon/e.target#readme",
+  "devDependencies": {
+    "json-server": "^0.15.1"
+  }
+}
