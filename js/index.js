@@ -1,20 +1,10 @@
-// $ 사인은 \$로 escape 처리해준다.
-// ` 백틱은 \`으로 escape 처리해준다.
-// 그 외 특수 문자를 써야하는 경우 모두 escape 처리해준다.
-// &#45;
-
-// const a = `
-//   1. <object>, <param>`;
-
-
 /* ------------------ State ------------------ */
 let quizType = ''; // 선택한 퀴즈 카테고리
 let quizScore = 0; // 선택한 퀴즈 스코어
 let answer = ''; // 선택한 답
 let quiz = {}; // 서버가 반환한 퀴즈 객체를 이 곳에 할당
 let isPlaying = false; // 현재 퀴즈가 진행 중인지
-let currentPoint = 200; // 페이지 로드 시 보유 포인트를 200으로 설정
-
+let currentPoint = 50; // 페이지 로드 시 보유 포인트를 200으로 설정
 
 /* ------------------ DOM Objects ------------------ */
 const $currentPoint = document.querySelector('.current-point');
@@ -23,8 +13,9 @@ const $quizCategory = document.querySelector('.quiz-category');
 const $categoryList = document.querySelector('.category-list');
 const $quizScore = document.querySelector('.quiz-score');
 const $scoreList = document.querySelector('.score-list');
+const $scoreError = document.querySelector('.score-error');
 const $quizStart = document.querySelector('.quiz-start');
-const $error = document.querySelector('.error');
+const $selectError = document.querySelector('.select-error');
 const $quizPrompt = document.querySelector('.quiz-prompt');
 const $quizWrapper = document.querySelector('.quiz-wrapper');
 const $choiceList = document.querySelector('.choice-list');
@@ -33,8 +24,6 @@ const $submit = document.querySelector('.submit');
 const $popupCorrect = document.querySelector('.correct');
 const $popupWrong = document.querySelector('.wrong');
 const $popupHonor = document.querySelector('.honor');
-const $list = document.querySelectorAll('.list');
-
 
 /* ------------------ Functions ------------------ */
 // 선택한 카드에 active 클래스 추가
@@ -48,8 +37,10 @@ const flipCard = target => {
 const replaceDescription = d => {
   const indent = /  /g;
   const newLine = /\n/g;
+  const greaterThan = />/g;
+  const lessThan = /</g;
 
-  return d.replace(indent, '&nbsp;&nbsp;').replace(newLine, '</br>');
+  return d.replace(indent, '&nbsp;&nbsp;').replace(greaterThan, '&gt;').replace(lessThan, '&lt;').replace(newLine, '</br>');
 };
 
 // 문제 생성 시 화면 최하단으로 스크롤 다운
@@ -85,51 +76,49 @@ const renderQuiz = q => {
   scrollDown();
 };
 
-// const
-
-
 /* ------------------ Event Handler ------------------ */
+window.onload = () => {
+  $bettingPoint.textContent = quizScore;
+  $currentPoint.textContent = currentPoint - quizScore;
+};
+
 // quizType 상태를 선택된 카테고리로 설정
-$categoryList.onchange = ({
-  target
-}) => {
+$categoryList.onchange = ({ target }) => {
   if (target.classList.contains('category')) return;
   quizType = flipCard(target);
-  // console.log(quizType);
+  console.log(quizType);
 };
 
 // quizScore 상태를 선택된 점수로 설정, currentPoint와 bettingPoint 갱신
-$scoreList.onchange = ({
-  target
-}) => {
+$scoreList.onchange = ({ target }) => {
   if (target.classList.contains('score')) return;
   quizScore = +flipCard(target);
+  console.log(quizScore);
   // todo 0: 만약 currentPoint를 초과하는 quizScore를 선택할 경우 에러 메시지 출력
-  // if (quizScore > $currentPoint.textContent) {
-  //   alert('베팅할 포인트가 부족합니다. 다시 선택해 주세요.')
-  // }
+  if (currentPoint - quizScore < 0) {
+    $scoreError.style.display = 'block';
+  } else {
+    $scoreError.style.display = 'none';
+  }
   $currentPoint.textContent = `${currentPoint - quizScore}`;
   $bettingPoint.textContent = `${quizScore}`;
-  // console.log(quizScore);
 };
 
 // 퀴즈 실행
-$quizStart.onclick = ({
-  target
-}) => {
+$quizStart.onclick = ({ target }) =>   {
   // 1. 퀴즈 카테고리 혹은 점수를 선택하지 않았으면 에러 메시지를 표시한다.
   if (!quizType || !quizScore) {
-    $error.style.display = 'block';
+    $selectError.style.display = 'block';
     return;
   }
 
   isPlaying = true; // 2. isPlaying 상태를 true 변경, 아직 어디에 쓰일 지 모름.
-  $error.style.display = 'none'; // 3. error 메시지를 display: none 처리한다.
+  $selectError.style.display = 'none'; // 3. error 메시지를 display: none 처리한다.
 
   // 4. json-server에 quizType과 quizScore 상태에 해당하는 문제를 요청한다.
-  fetch('http://localhost:8000/HTMLproblems/3')
+  fetch('http://localhost:5000/html/1')
     .then(problem => problem.json())
-    // 5. 요청한 데이터(문제)를 문제 출제 영역에 innerHTML로 삽입한다.
+  // 5. 요청한 데이터(문제)를 문제 출제 영역에 innerHTML로 삽입한다.
     .then(parsedProblem => renderQuiz(parsedProblem))
     .catch(console.error);
 
@@ -144,9 +133,7 @@ $quizStart.onclick = ({
 };
 
 // answer 상태를 사용자가 선택한 보기로 설정
-$choiceList.onchange = ({
-  target
-}) => {
+$choiceList.onchange = ({ target }) => {
   if (target.classList.contains('choice')) return;
   answer = target.nextElementSibling.textContent;
   // console.log(answer);
@@ -158,9 +145,6 @@ $submit.onclick = () => {
   if (answer === quiz.answer) {
     // 1.1 correct popup을 표시한다.
     $popupCorrect.style.display = 'block';
-    // $currentPoint.textContent = `${$currentPoint + quizScore}`;
-    // console.log($currentPoint.textContent);
-
     // todo 3: 포인트 추가
     // todo 4: quiz 상태의 solved 프로퍼티를 true로 변경
     // quiz 객체에는 solved 프로퍼티가 없지만, 아마 필요할 것 같음.
@@ -173,66 +157,29 @@ $submit.onclick = () => {
   }
 };
 
-
-
-
-// continue 클릭시 카테고리 카드화면 창 띄우기
-const submitContinue = () => {
-  $quizCategory.style.display = 'block';
-  $quizScore.style.display = 'block';
-  $quizStart.style.display = 'block'
-  $quizPrompt.style.display = 'none';
-  $popupWrong.style.display = 'none';
-  $popupCorrect.style.display = 'none';
-};
-
-// quit 클릭시 명예의 전당 팝업창 띄우기
-const submitQuit = () => {
-  $popupHonor.style.display = 'block';
-};
-
-
-// continue 클릭시 카테고리 카드화면 창 띄우기
-$popupCorrect.onclick = ({ target }) => {
-  if (target.classList.contains('continue')) submitContinue();
-  // quit 클릭시
-  else submitQuit();
-};
-
-// quit 클릭시 명예의 전당 팝업창 띄우기
-$popupWrong.onclick = ({
-  target
-}) => {
-  if (target.classList.contains('continue')) submitContinue();
-  else if (target.classList.contains('quit')) submitQuit();
-  // double down 클릭시 보유 포인트 차감, 새 문제창으로 이동
-  else $popupWrong.style.display = 'none';
-};
-
-// 명예의 전당 input 창 띄우거나 종료
-$popupHonor.onclick = ({
-  target
-}) => {
-  if (target.classList.contains('continue')) {
-    // css?
-    $popupHonor.innerHTML = `
-    <form action="" method="get">
-    Username <input type="text" name="username">
-    Score "${currentPoint}"
-    <input type="submit">
-    </form>`;
-    // quti 클릭시 초기화
-  } else {
-    $quizPrompt.style.display = 'none';
-    $popupWrong.style.display = 'none';
-    // 수고하셨습니다 표시 띄우기?
-  }
-};
-
-
 // todo 6: correct popup 안의 각 버튼별 이벤트 처리
 // todo 7: wrong popup 안의 각 버튼별 이벤트 처리
 // todo 8: honor popup 안의 각 버튼별 이벤트 처리
 // todo 9: honor popup 안에서 yes를 선택한 경우,
 // Username을 입력 받을 input 영역이 필요함. 또한 서버에 post 메소드로
 // Username과 최종 스코어를 전달해야하므로 이 두 가지 데이터를 담을 DB도 필요함.
+
+// 현재 내 json-server의 db.json에 담겨 있는 데이터
+// {
+//   "problems": [
+//     {
+//       "id": 1,
+//       "category": "Javascript",
+//       "point": 50,
+//       "question": "아래 코드의 실행 결과는?",
+//       "description": "<code>const Animal = (function () {\n  let _animal = '';\n  function Animal(name) {\n    _animal = name;\n  }\n  \n  Animal.prototype.bark = function () {\n    console.log(`${_animal} says WOOF!`);\n  }\n  return Animal;\n}());\n\nconst doggy = new Animal('doggy');\ndoggy.bark();</code>",
+//       "choice": [
+//         "doggy says WOOF!",
+//         "SyntaxError",
+//         "undefined",
+//         "referenceError"
+//       ],
+//       "answer": "doggy says WOOF!"
+//     }
+//   ]
+// }
