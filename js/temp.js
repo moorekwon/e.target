@@ -1,5 +1,10 @@
+const a = `(예\“+3\”)`;
+console.log(JSON.stringify(a));
+
+
+
 /* ------------------ CONSTANT ------------------ */
-const URL = 'http://localhost:5000';
+const URL = 'http://localhost:8000';
 
 /* ------------------ DOM ------------------ */
 const $ranking = document.querySelector('.ranking');
