@@ -1,25 +1,3 @@
-const a = `
-  1. <object>, <param>
-  2. <form>, <select>, <option>
-  3. <frameset>, <frame>, <iframe>
-  4. <table>, <th>, <tr>, <td>`;
-
-console.log(JSON.stringify(a));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ------------------ State ------------------ */
 let quizType = ''; // 선택한 퀴즈 카테고리
 let quizScore = 0; // 선택한 퀴즈 스코어
