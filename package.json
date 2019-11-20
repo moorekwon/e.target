@@ -2,7 +2,7 @@
   "name": "e.target",
   "version": "1.0.0",
   "description": "<br>",
-  "main": "index.js",
+  "main": "temp.js",
   "scripts": {
     "start": "json-server --watch db.json --port 8000"
   },

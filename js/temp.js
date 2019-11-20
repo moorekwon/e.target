@@ -30,7 +30,7 @@ let bettingPoint = 0; // 선택한 퀴즈 스코어
 let submittedAnswer = ''; // 선택한 답
 let quiz = {}; // 서버가 반환한 퀴즈 객체를 이 곳에 할당
 let isPlaying = false; // 현재 퀴즈가 진행 중인지
-let currentPoint = 50; // 페이지 로드 시 보유 포인트를 200으로 설정
+let currentPoint = 200; // 페이지 로드 시 보유 포인트를 200으로 설정
 // let evalPoint; bettingPoint > currentPoint;
 
 let second;
@@ -268,12 +268,12 @@ const getAnswer = () => {
 
 // toggle hide on quiz start btn & select error
 // const toggleHide = domArr => {
-const toggleHide = (domArr, test) => {
-  domArr.forEach(dom => {
-    dom.classList.toggle('hide', test);
-    // console.log(dom);
-  });
-};
+// const toggleHide = (domArr, test) => {
+//   domArr.forEach(dom => {
+//     dom.classList.toggle('hide', test);
+//     // console.log(dom);
+//   });
+// };
 
 const addHide = domArr => {
   domArr.forEach(dom => {
@@ -332,7 +332,8 @@ $scoreList.onchange = ({ target }) => {
 
   bettingPoint = +flipCard(target);
 
-  toggleHide([$quizStart, $scoreError], currentPoint < bettingPoint);
+  addHide([$scoreError], currentPoint < bettingPoint);
+  removeHide([$quizStart], currentPoint >= bettingPoint);
 
   // if (currentPoint < bettingPoint) {
   //   addHide([$quizStart]);
