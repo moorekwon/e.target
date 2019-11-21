@@ -97,10 +97,10 @@
         "question": "다음 중 블록 요소가 아닌 것은 무엇인가?",
         "description": "",
         "choice": [
-          "<h1>",
-          "<a>",
-          "<div>",
-          "<ul>"
+          "&lt;h1&gt;",
+          "&lt;a&gt;",
+          "&lt;div&gt;",
+          "&lt;ul&gt;"
         ],
         "answer": "2",
         "solved": false
@@ -123,7 +123,7 @@
       {
         "id": 9,
         "category": "html",
-        "point": 250,
+        "point": 25,
         "question": "다음 중 화면출력 결과에 영향을 주지 않는 HTML 문서내에 설명문을 기술하고자 할 때 그 사용이 옳은 것은?",
         "description": "",
         "choice": [
@@ -148,6 +148,66 @@
           "<table>, <th>, <tr>, <td>"
         ],
         "answer": "3",
+        "solved": false
+      },
+      {
+        "id": 11,
+        "category": "html",
+        "point": 50,
+        "question": "다음 중 HTML5 요소에 관한 설명으로 잘못된 것은?",
+        "description": "\n1. <section> 요소는 일반적으로 콘텐츠를 장이나 절 등으로 구분하고자 할 경우에 적절하다.\n2. 문서의 제목이나 이름을 나타내는 <title> 요소는 <head> 요소 안에 위치하며,\n  내용은 텍스트로만 작성할 수 있다.\n3. <nav> 요소는 본문의 주요 내비게이션을 마크업할 때 사용할 수 있다.\n4. <main> 요소는 <body> 영역의 주요 콘텐츠 블록을 그룹화할 때 사용할 수 있으며,\n  <body> 영역 안에 <main> 요소는 여러 번 사용할 수 있다.\n",
+        "choice": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "4",
+        "solved": false
+      },
+      {
+        "id": 12,
+        "category": "html",
+        "point": 50,
+        "question": "다음 중 언어를 정의할 때 사용할 수 있는 속성은 무엇인가?",
+        "description": "",
+        "choice": [
+          "alt",
+          "lang",
+          "title",
+          "class"
+        ],
+        "answer": "lang",
+        "solved": false
+      },
+      {
+        "id": 13,
+        "category": "html",
+        "point": 50,
+        "question": "다음 중 확장 가능한 마크업 언어는 무엇인가?",
+        "description": "",
+        "choice": [
+          "XML",
+          "HTML",
+          "XHTML",
+          "Mark Down"
+        ],
+        "answer": "XML",
+        "solved": false
+      },
+      {
+        "id": 14,
+        "category": "html",
+        "point": 50,
+        "question": "RSS 피드로 재배포할 가치가 있는 독립된 콘텐츠를 정의할 때 적절한 요소는 무엇인가?",
+        "description": "",
+        "choice": [
+          "<nav>",
+          "<section>",
+          "<header>",
+          "<article>"
+        ],
+        "answer": "<article>",
         "solved": false
       }
     ],
@@ -306,90 +366,150 @@
         "id": 1,
         "category": "Javascript",
         "point": 100,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
-        "description": "",
+        "question": "인터프리터의 특징이 아닌 것은?",
+        "description": "\n1. 실행 파일을 생성한다.\n2. 한 줄씩 바이트 코드로 변환한다.\n3. 컴파일러에 비해 코드 실행 속도가 느린 편이다.\n4. 코드 변환 후 즉시 실행한다.\n",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "1",
+          "2",
+          "3",
+          "4"
         ],
-        "answer": "padding",
+        "answer": "1",
         "solved": false
       },
       {
         "id": 2,
         "category": "Javascript",
         "point": 100,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
-        "description": "",
+        "question": "html 내에서 script 태그에 관한 설명으로 옳지 않은 것은?",
+        "description": "\n1. script 태그가 body 요소의 가장 아래에 위치할 경우,\n  DOM 비완성 상태에서 DOM을 조작할 때 에러가 발생한다.\n2. script 태그의 async 어트리뷰트는 웹페이지 파싱이 완료된 직후 스크립트를 실행한다.\n3. script 태그의 async와 defer 어트리뷰트는 웹페이지 파싱과 외부 스클비트 파일 다운로드를 동시에 진행한다.\n4. 자바스크립트는 HTML의 렌더링 엔진이 아닌 자바스크립트 엔진에서 따로 실행한다.\n",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "1",
+          "2",
+          "3",
+          "4"
         ],
-        "answer": "padding",
+        "answer": "2",
         "solved": false
       },
       {
         "id": 3,
         "category": "Javascript",
         "point": 50,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
+        "question": "식별자 네이밍 규칙에서 생성자 함수, 클래스 이름에 일반적으로 사용되는 네이밍 컨벤션은 무엇인가?",
         "description": "",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "camelCase",
+          "snake_case",
+          "PascalCase",
+          "typeHungarianCase"
         ],
-        "answer": "padding",
+        "answer": "pascal case",
         "solved": false
       },
       {
         "id": 4,
         "category": "Javascript",
         "point": 50,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
+        "question": "데이터 타입 중 객체 타입이 아닌 것은?",
         "description": "",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "객체",
+          "심볼",
+          "함수",
+          "배열"
         ],
-        "answer": "padding",
+        "answer": "심볼",
         "solved": false
       },
       {
         "id": 5,
         "category": "Javascript",
         "point": 25,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
-        "description": "",
+        "question": "동적 타입 언어에 관한 설명으로 틀린 것은?",
+        "description": "\n1. 변수를 선언할 때 타입을 선언하지 않는다.\n2. 값을 할당하는 시점에 변수의 타입을 동적으로 결정한다.\n3. 컴파일 시점에 타입을 체크하여\n  통과하지 못했으면 에러를 발생시키고 프로그램 실행을 중지한다.\n4. 어떠한 데이터 타입의 값이라도 자유롭게 할당한다.\n",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "1",
+          "2",
+          "3",
+          "4"
         ],
-        "answer": "padding",
+        "answer": "3",
         "solved": false
       },
       {
         "id": 6,
         "category": "Javascript",
         "point": 10,
-        "question": "CSS3의 box-sizing 속성에 border-box를 지정할 경우 박스의 실제 크기는 width 값에 border와 무엇을 포함시켜 계산되는가?",
-        "description": "",
+        "question": "문과 표현식에 대한 설명이다. 틀린 것은?",
+        "description": "\n1. 문은 if 문, for 문 등 제어문을 생성해 프로그램의 흐름 제어를 가능케 한다.\n2. 표현식은 값을 생성하는 것 이상의 행위는 불가능하다.\n3. 표현식은 let, function, class 등 선언 키워드를 사용해\n  변수, 함수, 클래스의 생성을 가능케 한다.\n4. 자바스크립트의 모든 코드는 문 또는 표현식이다.\n",
         "choice": [
-          "height",
-          "margin",
-          "padding",
-          "background"
+          "1",
+          "2",
+          "3",
+          "4"
         ],
-        "answer": "padding",
+        "answer": "3",
+        "solved": false
+      },
+      {
+        "id": 7,
+        "category": "Javascript",
+        "point": 50,
+        "question": "연산자에 대한 설명이다. 틀린 것은?",
+        "description": "\n1. ||, &&, ! 등 논리 연산자는 부수효과가 있다.\n2. typeof 연산자는 null을 반환하지 않는다.\n3. 단항 산술 연산자는 1개의 피연산자를 산술 연산하며,\n  -는 양수를 음수로, 음수를 양수로 바꾼다.\n4. 삼항 조건 연산자는 조건식의 평가 결과에 따라 반환할 값을 결정하는 표현식인 문이다.\n",
+        "choice": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "1",
+        "solved": false
+      },
+      {
+        "id": 8,
+        "category": "Javascript",
+        "point": 25,
+        "question": "제어문에 대한 설명으로 틀린 것은?",
+        "description": "\n1. while 문은 조건식의 평가 결과가 불리언 값이 아닐 경우 불리언 값으로 강제 변환한다.\n2. 삼항 조건 연산자는 값처럼 사용할 수 있기 때문에 변수에 할당이 가능하다.\n3. if...else 문은 표현식이 아닌 문이다.\n4. 블록문은 0개 이상의 문을 중괄호로 묶은 것으로써, 블록문 끝에는 ;를 붙여준다.\n",
+        "choice": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "4",
+        "solved": false
+      },
+      {
+        "id": 9,
+        "category": "Javascript",
+        "point": 10,
+        "question": "암묵적 타입 변환의 옳지 않은 경우를 고르시오",
+        "description": "\n1. '-'는ㄴ 산술 연산자로 동작한다.\n2. '+'는 단항 연산자의 경우 숫자 타입이 아닌 피연산자를 숫자 타입으로 암묵적 변환을 한다.\n3. '+'는 피연산자 중 하나 이상 숫자이면 숫자 타입으로 암묵적 변환을 한다.\n4. Falsy 값에는 false, undefined, null, 0, -0, NaN, ''이 있다.\n",
+        "choice": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "3",
+        "solved": false
+      },
+      {
+        "id": 10,
+        "category": "Javascript",
+        "point": 10,
+        "question": "배열 고차 함수의 설명이 맞지 않는 것은?",
+        "description": "\n1. forEach -> 반환값은 언제나 undefined 이다.\n2. filter -> 새로운 배열의 length는 this의 length와 같거나 작으며,\n  원본 배열은 변경된다.\n3. reduce -> 하나의 결과값을 반환하며, 원본 배열은 변경되지 않는다.\n4. map -> 외부에서 this를 전달하지 않으면\n  콜백 함수 내부의 this는 전역 객체를 가리킨다.\n",
+        "choice": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "2",
         "solved": false
       }
     ]
@@ -408,6 +528,26 @@
       "id": 3,
       "username": "Kwon",
       "score": 5000
+    },
+    {
+      "id": 4,
+      "username": "gywls",
+      "score": 50
+    },
+    {
+      "id": 5,
+      "username": "dd",
+      "score": 50
+    },
+    {
+      "id": 6,
+      "username": "hyojin",
+      "score": 125
+    },
+    {
+      "id": 7,
+      "username": "hyojin",
+      "score": 125
     }
   ]
 }

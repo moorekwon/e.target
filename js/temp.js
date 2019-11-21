@@ -1,7 +1,14 @@
-/* ------------------ CONSTANT ------------------ */
+/* ------------------------- CONSTANT ------------------------- */
 const URL = 'http://localhost:8000';
 
-/* ------------------ DOM ------------------ */
+// 각 난이도 별 포인트 및 제한시간(초)
+const EASY = [10, 30];
+const NORMAL = [25, 45];
+const HARD = [50, 60];
+const EXTREME = [100, 75];
+// const INIT_POINT = 100;
+
+/* ------------------------- DOM ------------------------- */
 const $ranking = document.querySelector('.ranking');
 const $currentPoint = document.querySelector('.current-point');
 const $bettingPoint = document.querySelector('.betting-point');
@@ -12,40 +19,36 @@ const $scoreList = document.querySelector('.score-list');
 const $selectError = document.querySelector('.select-error');
 const $scoreError = document.querySelector('.score-error');
 const $quizStart = document.querySelector('.quiz-start');
+const $quizRestart = document.querySelector('.quiz-restart');
 const $quizPrompt = document.querySelector('.quiz-prompt');
 const $quizWrapper = document.querySelector('.quiz-wrapper');
 const $choiceList = document.querySelector('.choice-list');
 const $submit = document.querySelector('.submit');
 const $popup = document.querySelector('.popup');
-const $timer = document.querySelector('.timer');
-// const $popupCorrect = document.querySelector('.correct');
-// const $popupWrong = document.querySelector('.wrong');
-// const $popupHonor = document.querySelector('.honor');
-// const $continue = document.querySelectorAll('.continue');
-// const $quit = document.querySelectorAll('.quit');
+// const $timer = document.querySelector('.timer');
 
-/* ------------------ State ------------------ */
-let category = ''; // 선택한 퀴즈 카테고리
+/* ------------------------- State ------------------------- */
+let currentPoint = 100; // 페이지 로드 시 보유 포인트를 200으로 설정
 let bettingPoint = 0; // 선택한 퀴즈 스코어
-let submittedAnswer = ''; // 선택한 답
-let quiz = {}; // 서버가 반환한 퀴즈 객체를 이 곳에 할당
-let isPlaying = false; // 현재 퀴즈가 진행 중인지
-let currentPoint = 200; // 페이지 로드 시 보유 포인트를 200으로 설정
-// let evalPoint; bettingPoint > currentPoint;
+let category; // 선택한 퀴즈 카테고리
+let quiz; // 서버가 반환한 퀴즈 객체를 이 곳에 할당
+let minute; // 풀이 제한 시간(분)
+let second; // 풀이 제한 시간(초)
+let intervalId; // 타이머를 실행시킨 테스크의 id
+let submittedAnswer; // 선택한 답
+// let isPlaying = false; // 현재 퀴즈가 진행 중인지
 
-let second;
-let intervalId = 0;
+// 문제 목록
+let problems; // 전체 문제
+let htmlProblems; // html 문제
+let cssProblems; // css 문제
+let jsProblems; // js 문제
 
-// 문제 목록 - 서버가 응답한 문제를 parse하여 state로 보유
-let problems = [];
-let htmlProblems = [];
-let cssProblems = [];
-let jsProblems = [];
+// 랭킹 목록
+let ranking;
 
-// 랭킹 정보
-let ranking = [];
+/* ------------------------- Function ------------------------- */
 
-/* ------------------ Function ------------------ */
 // 스크롤을 최하단으로 위치시킨다.
 const scrollDown = () => {
   window.scrollTo({
@@ -56,12 +59,19 @@ const scrollDown = () => {
   });
 };
 
-// 랭킹 정보를 명예의 전당에 추가한다.
-const renderRanking = () => {
+const getMaxUserId = () => Math.max(0, ...ranking.map(user => user.id)) + 1;
+
+// 랭킹 정보를 명예의 전당에 표시한다.
+const renderScoreBoard = () => {
   // console.log(ranking);
   ranking.sort((user1, user2) => user2.score - user1.score);
 
-  let html = '';
+  let html = `<tr class="row">
+    <th>Rank</th>
+    <th>Username</th>
+    <th>Score</th>
+  </tr>`;
+
   ranking.forEach((user, idx) => {
     html += `<tr class="row user">
     <td class="rank">${idx + 1}</td>
@@ -69,10 +79,10 @@ const renderRanking = () => {
     <td class="score">${user.score}</td>
     </tr>`;
   });
-  $ranking.innerHTML += html;
+  $ranking.innerHTML = html;
 };
 
-// 보유 포인트/베팅 포인트를 표시한다.
+// 보유 포인트/베팅 포인트를 스코어 보드에 표시한다.
 const renderPoint = () => {
   const evalPoint = currentPoint - bettingPoint < 0;
 
@@ -81,7 +91,23 @@ const renderPoint = () => {
   $currentPoint.textContent = evalPoint ? currentPoint : currentPoint - bettingPoint;
 };
 
-// 팝업 표시 -- 수정 필요
+// DOM의 classList에 className을 추가한다.
+const addClass = (className, ...domArr) => {
+  // console.log(domArr);
+  domArr.forEach(dom => {
+    dom.classList.add(className);
+  });
+};
+
+// DOM의 classList에 className을 삭제한다.
+const removeClass = (className, ...domArr) => {
+  // console.log(domArr);
+  domArr.forEach(dom => {
+    dom.classList.remove(className);
+  });
+};
+
+// 정답 제출 후 팝업을 표시한다. - 리팩토링 가능한지?
 const popup = type => {
   let html = '';
 
@@ -96,33 +122,41 @@ const popup = type => {
   } else if (type === 'wrong') {
     html = `<p>오답입니다.<br>
       ${bettingPoint}포인트를 차감합니다.<br>
-      계속 진행하시겠습니까?</p>
+      계속 진행하시겠습니까?<br>
+      정답: ${quiz.answer}</p>
       <div class="btn-group">
         <button class="continue">YES</button>
         <button class="quit">NO</button>
-        <button class="double-down">Double Down</button>
       </div>`;
   } else if (type === 'allin') {
     html = `<p>오답입니다.<br>
-    포인트를 모두 소진하였습니다.<br>
-    분발하세요.</p>
-    <div class="btn-group">
-      <button class="allin">OK</button>
-    </div>`;
+      포인트를 모두 소진하였습니다.<br>
+      분발하세요.<br>
+      정답: ${quiz.answer}</p>
+      <div class="btn-group">
+        <button class="allin">OK</button>
+      </div>`;
   } else if (type === 'congrat') {
+    addClass('disable', $quizStart);
     html = `<p> 축하합니다! 모든 문제를 완료했습니다.</br>
-    최종 포인트는 ${currentPoint}포인트 입니다.</br>
+      최종 포인트는 ${currentPoint}포인트 입니다.</br>
+      명예의 전당에 등록하시겠습니까?</p>
+      <div class="btn-group">
+        <button class="honor-continue">YES</button>
+        <button class="honor-quit">NO</button>
+      </div>`;
+  } else if (type === 'honor') {
+    html = `<p>최종 포인트는 ${currentPoint}포인트 입니다.</br>
       명예의 전당에 등록하시겠습니까?</p>
       <div class="btn-group">
         <button class="honor-continue">YES</button>
         <button class="honor-quit">NO</button>
       </div>`;
   } else {
-    html = `<p>최종 포인트는 ${currentPoint}포인트 입니다.</br>
-      명예의 전당에 등록하시겠습니까?</p>
-      <div class="btn-group">
-        <button class="honor-continue">YES</button>
-        <button class="honor-quit">NO</button>
+    html = `<p>명예의 전당에 등록할 닉네임을 입력 후</br>
+      엔터 키를 눌러주세요.</p>
+      <div class="ranker">
+        <input type="text" class="ranker-name">
       </div>`;
   }
 
@@ -183,7 +217,7 @@ const renderScore = type => {
   scrollDown();
 };
 
-// 카드에 모션을 추가하여 카드의 id 값을 반환한다.
+// 카드에 모션을 추가하며 카드의 id 값을 반환한다.
 const flipCard = target => {
   target.nextElementSibling.classList.toggle('active');
 
@@ -200,24 +234,31 @@ const formatText = p => {
   return p.replace(indent, '&nbsp;&nbsp;').replace(greaterThan, '&gt;').replace(lessThan, '&lt;').replace(newLine, '</br>');
 };
 
-// 시간을 표시한다
+// 타이머에 시간을 표시한다.
 const displayTime = () => {
-  $timer.textContent = `00:${(second + '').length > 1 ? second : '0' + second}`;
+  // console.log(minute, second);
+  $timer.textContent = `
+  ${(minute + '').length > 1 ? minute : '0' + minute}:
+  ${(second + '').length > 1 ? second : '0' + second}`;
 };
 
-// 타이머를 실행한다
-const decreaseSecond = () => {
-  second -= 1;
-
-  displayTime();
+// 타이머를 실행한다.
+const runTimer = () => {
+  if (second === 0 && minute > 0) {
+    minute -= 1;
+    second = 60;
+  }
 
   if (!second) {
-    bettingPoint = 0;
     quiz.solved = true;
 
     clearInterval(intervalId);
     popup(!currentPoint ? 'allin' : 'wrong');
+    bettingPoint = 0;
     renderPoint();
+  } else {
+    second -= 1;
+    displayTime();
   }
 };
 
@@ -229,7 +270,15 @@ const renderQuiz = () => {
   const random = Math.floor(Math.random() * problem.length);
 
   quiz = problem[random];
-  second = 30;
+
+  // 포인트별 제한 시간 설정
+  if (quiz.point === EASY[0]) [, second] = EASY;
+  else if (quiz.point === NORMAL[0]) [, second] = NORMAL;
+  else if (quiz.point === HARD[0]) [, second] = HARD;
+  else [, second] = EXTREME;
+
+  minute = Math.floor(second / 60);
+  second %= 60;
 
   const formattedQuestion = formatText(quiz.question);
   const formattedDescription = formatText(quiz.description);
@@ -249,14 +298,14 @@ const renderQuiz = () => {
   });
 
   $choiceList.innerHTML = choiceList;
-  $timer.textContent = `00:${second}`;
-
   $quizPrompt.classList.remove('hide');
-  intervalId = setInterval(decreaseSecond, 1000);
+
+  displayTime();
+  intervalId = setInterval(runTimer, 100);
   scrollDown();
 };
 
-// 사용자가 제출한 답을 반환한다.
+// 제출한 정답을 반환한다.
 const getAnswer = () => {
   let res = '';
   [...$choiceList.children].forEach($li => {
@@ -266,33 +315,17 @@ const getAnswer = () => {
   return res;
 };
 
-// toggle hide on quiz start btn & select error
-// const toggleHide = domArr => {
-// const toggleHide = (domArr, test) => {
-//   domArr.forEach(dom => {
-//     dom.classList.toggle('hide', test);
-//     // console.log(dom);
-//   });
-// };
+/* ------------------------- Event Binding ------------------------- */
 
-const addHide = domArr => {
-  domArr.forEach(dom => {
-    dom.classList.add('hide');
-  });
-};
-
-const removeHide = domArr => {
-  domArr.forEach(dom => {
-    dom.classList.remove('hide');
-  });
-};
-
-/* ------------------ Event Binding ------------------ */
+// 페이지 로드 시 서버에 데이터를 요청하여
+// 응답 받은 데이터를 상태에 저장한 후
+// 브라우저에 표시한다.
 window.onload = async () => {
   try {
     // 명예의 전당 정보 요청 및 표시
     ranking = await fetch(`${URL}/ranking`).then(rank => rank.json());
-    renderRanking();
+    console.log(ranking);
+    renderScoreBoard();
 
     // 문제 목록 요청 및 표시
     // 문제를 카테고리 별로 분류
@@ -317,11 +350,8 @@ $categoryList.onchange = ({ target }) => {
   category = flipCard(target);
   bettingPoint = 0;
 
-  // $quizStart에 hide 클래스를 삭제하고,
-  // $scoreError에 hide 클래스를 추가한다.
-  removeHide([$quizStart]);
-  addHide([$scoreError]);
-
+  removeClass('hide', $quizStart);
+  addClass('hide', $scoreError, $selectError);
   renderPoint();
   renderScore(category);
 };
@@ -331,108 +361,127 @@ $scoreList.onchange = ({ target }) => {
   if (target.classList.contains('score')) return;
 
   bettingPoint = +flipCard(target);
+  addClass('hide', $selectError);
 
-  addHide([$scoreError], currentPoint < bettingPoint);
-  removeHide([$quizStart], currentPoint >= bettingPoint);
-
-  // if (currentPoint < bettingPoint) {
-  //   addHide([$quizStart]);
-  //   removeHide([$scoreError]);
-  // } else {
-  //   addHide([$scoreError]);
-  //   removeHide([$quizStart]);
-  // }
+  if (currentPoint < bettingPoint) {
+    addClass('hide', $quizStart);
+    removeClass('hide', $scoreError);
+  } else {
+    removeClass('hide', $quizStart);
+    addClass('hide', $scoreError);
+  }
 
   renderPoint();
 };
 
-// 퀴즈 스타트
+// 퀴즈 시작
 $quizStart.onclick = ({ target }) => {
   if (!category || !bettingPoint) {
-    $selectError.classList.remove('hide');
+    removeClass('hide', $selectError);
     return;
   }
-  $submit.classList.remove('disable');
-  $choiceList.classList.remove('disable');
-  isPlaying = true;
+
   currentPoint -= bettingPoint;
 
-  $choiceList.classList.remove('hide');
-  $submit.classList.remove('hide');
-
-  $selectError.classList.add('hide');
-  $quizCategory.classList.add('hide');
-  $quizScore.classList.add('hide');
-  target.classList.add('hide');
+  removeClass('disable', $submit, $choiceList);
+  removeClass('hide', $submit, $choiceList);
+  addClass('hide', $selectError, $quizCategory, $quizScore, target);
   renderQuiz();
 };
 
+// 답 제출
 $submit.onclick = () => {
-  // currentPoint -= quizPoint;
-  isPlaying = false;
-
-  // better idea?
-  $submit.classList.add('disable');
-  $choiceList.classList.add('disable');
+  clearInterval(intervalId);
+  addClass('disable', $submit, $choiceList);
 
   submittedAnswer = getAnswer();
-  // 정답일 경우
-  // console.log(submittedAnswer);
-  clearInterval(intervalId);
-  // isPlaying = false;
 
   if (submittedAnswer === quiz.answer) {
     popup('correct');
-
-    // 포인트 추가
     currentPoint = bettingPoint * 2 + currentPoint;
-    // yes -> set category, score, start as block
-    // no -> popup honor
-  }
-  // 오답일 경우
-  else {
-  //   if (!currentPoint) popup('allin');
-  //   else popup('wrong');
+  } else {
     popup(currentPoint === 0 ? 'allin' : 'wrong');
-    // 포인트 차감 (already done)
-    // yes or no?
   }
+
   bettingPoint = 0;
   quiz.solved = true;
-  // console.log(quiz.solved);
-  // console.log(htmlProblems);
-  // console.log(category);
+
   renderPoint();
 };
 
+// 제출한 답의 상태에 따라 팝업을 표시
 $popup.onclick = ({ target }) => {
   const btn = target.classList;
-  if (!btn.contains('continue')
-      && !btn.contains('quit')
-      && !btn.contains('allin')
-      && !btn.contains('honor-continue')
-      && !btn.contains('honor-quit')) return;
+  if (!(btn.contains('continue')
+      || btn.contains('quit')
+      || btn.contains('allin')
+      || btn.contains('honor-continue')
+      || btn.contains('honor-quit'))) return;
 
-  if (btn.contains('continue')) {
-    $quizCategory.classList.remove('hide');
-    $quizScore.classList.add('hide');
-    $quizStart.classList.remove('hide');
-    $quizPrompt.classList.add('hide');
-    $popup.classList.add('hide');
+  if (btn.contains('continue')) { // 계속 진행할 경우
+    removeClass('hide', $quizCategory, $quizStart);
+    addClass('hide', $quizScore, $quizPrompt, $popup);
     renderCategory();
-  } else if (btn.contains('quit')) {
-    console.log('quit');
+  } else if (btn.contains('quit')) { // 종료할 경우 (currentPoint > 0)
     popup('honor');
-  } else if (btn.contains('allin')) {
-    // show restart button
-    // 1. 팝업을 없앤다.
-    // 2. start 버튼이 아닌 restart 버튼을 표시한다.
-    // 3. restart 버튼을 누르면 상태를 초기화 시킨다.
-    // 3. restart 버튼을 누르면 페이지가 리로드된다.
-    console.log('all-in');
-  } else if (btn.contains('honor-continue')) {
-    console.log('honor-continue');
-  } else if (btn.contains('honor-quit')) {
-    console.log('honor-quit');
+  } else if (btn.contains('allin')) { // 종료할 경우 (currentPoint === 0)
+    // 방법 1. 페이지를 리로드한다.
+    // window.location.reload();
+
+
+    // 방법 2. restart 버튼을 표시한다.
+    // - 팝업을 없앤다.
+    // - 카테고리 선택 영역과 스코어 선택 영역을 숨김 처리한다.
+    // - start 버튼을 restart 버튼으로 대체한다.
+    addClass('hide', $popup, $quizCategory, $quizScore, $quizStart, $quizPrompt);
+    removeClass('hide', $quizRestart);
+    currentPoint = 0;
+    renderPoint();
+    // - restart 버튼을 클릭하면
+    //   - 모든 상태를 초기화한다.
+  } else if (btn.contains('honor-continue')) { // 종료 후 명예의 전당에 등록할 경우
+    popup('ranker');
+  } else if (btn.contains('honor-quit')) { // 종료 후 명예의 전당에 등록하지 않을 경우
+    // 방법 1. 페이지를 리로드한다.
+    // window.location.reload();
+
+
+    // 방법 2. restart 버튼을 표시한다.
+    // - 팝업을 없앤다.
+    // - 카테고리 선택 영역과 스코어 선택 영역을 숨김 처리한다.
+    // - start 버튼을 restart 버튼으로 대체한다.
+    addClass('hide', $popup, $quizCategory, $quizScore, $quizStart, $quizPrompt);
+    removeClass('hide', $quizRestart);
+    // - restart 버튼을 클릭하면
+    //   - 모든 상태를 초기화한다.
+    currentPoint = 0;
+    renderPoint();
   }
+};
+
+// db.json에 ranking 테이블에 username, score를 추가한다.
+$popup.onkeyup = async ({ target, keyCode }) => {
+  const username = target.value.trim();
+  if (!username || keyCode !== 13) return;
+  // console.log(username);
+  try {
+    await fetch(`${URL}/ranking`, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ id: getMaxUserId(), username, score: currentPoint })
+    });
+    ranking = await fetch(`${URL}/ranking`).then(res => res.json());
+    console.log(ranking);
+    // window.location.reload();
+    renderScoreBoard();
+    // 숨길거 숨기고 보일거 보이고
+    // restart 버튼
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+// restart 버튼을 클릭하면 페이지를 리로드한다.
+$quizRestart.onclick = () => {
+  window.location.reload();
 };
