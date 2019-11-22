@@ -1,5 +1,5 @@
 // CONSTANT
-const URL = 'http://localhost:5000';
+const URL = 'http://localhost:8000';
 const TYPE = ['html', 'css', 'javascript', 'random'];
 
 // STATE
@@ -226,10 +226,10 @@ domList.forEach(dom => {
       //   removeClass('hide', $quizWrapper, $put);
       //   $create.textContent = '문제 목록';
       //   create = !create;
-  
+
       //   const quiz = await fetch(`${URL}/${cat}/${id}`).then(q => q.json());
       //   console.log(quiz);
-  
+
       //   // 카테고리 설정
       //   [...$categoryList.children].forEach($li => {
       //     if ($li.id === quiz.category) {
@@ -237,7 +237,7 @@ domList.forEach(dom => {
       //       category = quiz.category;
       //     }
       //   });
-  
+
       //   // 포인트 설정
       //   [...$pointList.children].forEach($li => {
       //     if (+$li.id === quiz.point) {
@@ -245,15 +245,15 @@ domList.forEach(dom => {
       //       point = quiz.point;
       //     }
       //   });
-  
+
       //   // 제목 설정
       //   $question.value = quiz.question;
       //   question = quiz.question;
-  
+
       //   // 본문 설정
       //   $description.value = quiz.description;
       //   description = quiz.description;
-  
+
       //   // 보기 설정
       //   let list = [];
       //   [...$choice.children].forEach(($li, idx) => {
@@ -261,7 +261,7 @@ domList.forEach(dom => {
       //     list = [...list, quiz.choice[idx]];
       //     choice = list;
       //   });
-  
+
       //   // 정답 설정
       //   $answer.value = quiz.answer;
       //   answer = quiz.answer;

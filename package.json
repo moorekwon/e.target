@@ -2,7 +2,7 @@
   "name": "e.target",
   "version": "1.0.0",
   "description": "<br>",
-  "main": "app.js",
+  "main": "test.js",
   "dependencies": {
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon app"
+    "start": "json-server --watch db.json --port 8000"
   },
   "repository": {
     "type": "git",

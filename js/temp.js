@@ -28,7 +28,7 @@ const $quizWrapper = document.querySelector('.quiz-wrapper');
 const $choiceList = document.querySelector('.choice-list');
 const $submit = document.querySelector('.submit');
 const $popup = document.querySelector('.popup');
-// const $timer = document.querySelector('.timer');
+const $timer = document.querySelector('.timer');
 
 /* ------------------------- State ------------------------- */
 let currentPoint = 10000; // 페이지 로드 시 보유 포인트를 n으로 설정
@@ -320,7 +320,7 @@ const renderQuiz = catIdx => {
   $quizPrompt.classList.remove('hide');
 
   displayTime();
-  intervalId = setInterval(runTimer, 100);
+  intervalId = setInterval(runTimer, 1000);
   scrollDown();
 };
 

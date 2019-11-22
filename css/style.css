@@ -13,6 +13,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
 ul,
 ol {
   list-style: none;
@@ -74,7 +75,8 @@ body {
   caption-side: bottom;
   color: whitesmoke;
 }
-.header > h1 {
+
+.header>h1 {
   color: whitesmoke;
   text-shadow:
     0 0 10px rgb(243, 8, 8),
@@ -124,33 +126,35 @@ h1 {
   margin: 0 auto 20px auto;
   border-radius: 15px;
 }
-.hall-of-fame > h2 {
+
+.hall-of-fame>h2 {
   color: whitesmoke;
   text-shadow: 0 0 5px gold,
-  0 0 10px gold,
-  0 0 20px gold,
-  0 0 40px gold,
-  0 0 80px gold,
-  0 0 90px gold,
-  0 0 100px gold,
-  0 0 150px gold;
+    0 0 10px gold,
+    0 0 20px gold,
+    0 0 40px gold,
+    0 0 80px gold,
+    0 0 90px gold,
+    0 0 100px gold,
+    0 0 150px gold;
 }
 
 .ranking {
   margin: auto;
   color: whitesmoke;
   text-shadow: 0 0 5px gold,
-  0 0 10px gold,
-  0 0 20px gold,
-  0 0 40px gold,
-  0 0 80px gold,
-  0 0 90px gold,
-  0 0 100px gold,
-  0 0 150px gold;
+    0 0 10px gold,
+    0 0 20px gold,
+    0 0 40px gold,
+    0 0 80px gold,
+    0 0 90px gold,
+    0 0 100px gold,
+    0 0 150px gold;
   background: #181818;
   opacity: 0.9;
   border-radius: 1.2rem;
 }
+
 .row th,
 .row td {
   width: 200px;
@@ -169,19 +173,20 @@ h1 {
   background: black;
   border-radius: 0.6rem;
 }
+
 .score-board .row th,
 .score-board .row td {
   width: 75px;
   padding: 0 0 5px 0;
   color: white;
   text-shadow: 0 0 5px rgb(22, 194, 36),
-  0 0 10px rgb(22, 194, 36),
-  0 0 20px rgb(22, 194, 36),
-  0 0 40px rgb(22, 194, 36),
-  0 0 80px rgb(22, 194, 36),
-  0 0 90px rgb(22, 194, 36),
-  0 0 100px rgb(22, 194, 36),
-  0 0 150px rgb(22, 194, 36);
+    0 0 10px rgb(22, 194, 36),
+    0 0 20px rgb(22, 194, 36),
+    0 0 40px rgb(22, 194, 36),
+    0 0 80px rgb(22, 194, 36),
+    0 0 90px rgb(22, 194, 36),
+    0 0 100px rgb(22, 194, 36),
+    0 0 150px rgb(22, 194, 36);
 }
 
 .list {
@@ -222,8 +227,9 @@ h1 {
   line-height: 4.7rem;
   cursor: pointer;
 }
+
 .list input[type="radio"],
-.choice input[type="radio"]{
+.choice input[type="radio"] {
   position: absolute;
   top: 1px;
   left: 1px;
@@ -237,6 +243,7 @@ h1 {
   box-shadow: 3px 3px 6px rgb(221, 213, 213);
   color: rgb(236, 67, 67);
 }
+
 .active {
   transform: rotateY(360deg);
 }
@@ -256,6 +263,7 @@ h1 {
   background-size: 99% 99%;
   font-weight: 900;
 }
+
 .category-list label {
   background-image: url(../img/vGm4U3r1.jpg);
   font-size: 2.4rem;
@@ -263,6 +271,7 @@ h1 {
   color: #fff;
   text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
 }
+
 .score-list label {
   background-image: url(../img/vGm4U3r2.jpg);
   text-shadow: 1px 1px 2px rgb(231, 108, 6), 0 0 1em rgb(155, 5, 224), 0 0 0.2em rgb(155, 5, 224);
@@ -292,8 +301,8 @@ h1 {
 
 .btn-group {
   text-align: center;
-  padding-top: 20px;
 }
+
 .quiz-start,
 .quiz-restart {
   display: block;
@@ -311,10 +320,10 @@ h1 {
   color: whitesmoke;
   background-color: black;
 }
+
 .quiz-start:hover,
 .quiz-restart:hover {
   color: #f44336;
-  background: #fff;
 }
 
 .select-error {
@@ -357,11 +366,13 @@ h1 {
   font-size: 1.6rem;
   line-height: 3rem;
 }
-.quiz-wrapper > h4 {
+
+.quiz-wrapper>h4 {
   font-size: 1.6rem;
   line-height: 3rem;
   margin: 0 2rem;
 }
+
 .timer {
   position: absolute;
   display: block;
@@ -386,10 +397,12 @@ h1 {
   width: 100px;
   height: 50px;
 }
+
 .submit:hover {
   cursor: pointer;
   color: #181818;
 }
+
 /* 팝업 */
 .popup {
   background: black;
@@ -413,7 +426,8 @@ h1 {
 .popup>span {
   display: inline-block;
 }
-.popup > div > button {
+
+.popup>div>button {
   background: whitesmoke;
   color: #181818;
   border: 0;
@@ -423,7 +437,8 @@ h1 {
   outline: none;
   margin-left: 1.2rem;
 }
-.popup > div > button:hover {
+
+.popup>div>button:hover {
   background: #181818;
   color: whitesmoke;
 }
